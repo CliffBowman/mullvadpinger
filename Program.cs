@@ -1,5 +1,6 @@
 ﻿using System;
 using CommandLine;
+using Microsoft.Practices.Unity;
 
 namespace MullvadPinger
 {
@@ -7,16 +8,21 @@ namespace MullvadPinger
     {
         public static void Main(string[] args)
         {
-            ParseCommandLineArgs(args);
-        }
+            IUnityContainer container = new UnityContainer();
+            container.RegisterType<IMullvadClient, MullvadClient>();
+            // container.RegisterType<IMullvadDataSource, MullvadDataSource>();
+            container.RegisterType<IMullvadDataSource, SampleMullvadDataSource>();
+            // container.RegisterType<IPingWrapper, PingWrapper>();
+            container.RegisterType<IPingWrapper, NoopPingWrapper>();
 
-        private static void ParseCommandLineArgs(string[] args)
-        {
             Parser.Default
-                .ParseArguments<CommandLineOptions>(args)
-                .WithParsed<CommandLineOptions>(clo =>
+                .ParseArguments<CommandLineArgs>(args)
+                .WithParsed<CommandLineArgs>(options =>
                 {
-                    //todo
+                    var mullvadClient = container.Resolve<IMullvadClient>();
+                    var servers = mullvadClient.GetVPNServerListAsync().GetAwaiter().GetResult();
+
+                    servers.ForEach(Console.WriteLine);
                 });
         }
     }
