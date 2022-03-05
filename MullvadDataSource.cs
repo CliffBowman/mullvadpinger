@@ -20,9 +20,4 @@ namespace MullvadPinger
             return await File.ReadAllTextAsync(filename);
         }
     }
-
-    public interface IMullvadDataSource
-    {
-        Task<string> GetVPNServerJsonAsync();
-    }
 }

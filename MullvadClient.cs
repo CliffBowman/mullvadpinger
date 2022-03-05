@@ -27,21 +27,4 @@ namespace MullvadPinger
                 .ToList();
         }
     }
-
-    public interface IMullvadClient
-    {
-        Task<List<MullvadVPNServer>> GetVPNServerListAsync();
-    }
-
-    public record class MullvadVPNServer
-    {
-        public string? Hostname { get; init; }
-        public string? PublicKey { get; init; }
-        public int SpeedInGbps { get; init; }
-
-        public override string ToString()
-        {
-            return $"{Hostname} {PublicKey} {SpeedInGbps}";
-        }
-    }
 }
