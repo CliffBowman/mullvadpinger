@@ -1,4 +1,6 @@
 using Moq;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Schema;
 using NUnit.Framework;
 
 namespace MullvadPinger
@@ -6,6 +8,23 @@ namespace MullvadPinger
     [TestFixture]
     public class MullvadClientTests
     {
+        [Test]
+        public void ValidateSchemaTest()
+        {
+            // TODO: Update project to copy to output folder and use relative paths.
+            
+            var schema = JSchema.Parse(File.ReadAllText(@"../../../schemas/mullvad-www-relays-all-response-schema.json"));
+            var serverList = JArray.Parse(File.ReadAllText(@"../../../data/mullvad-www-relays-all-response-sample.json"));
+
+            IList<string> errors = new List<string>();
+
+            var isValid = serverList.IsValid(schema, out errors);
+
+            errors.ToList().ForEach(Console.WriteLine);
+
+            Assert.IsTrue(isValid);
+        }
+
         [Test]
         public async Task GetVPNServerListAsyncTest()
         {

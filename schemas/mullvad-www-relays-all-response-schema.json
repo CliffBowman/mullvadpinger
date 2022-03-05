@@ -1,0 +1,78 @@
+{
+    "title": "Mullvad VPN server list",
+    "$schema": "http: //json-schema.org/draft-04/schema#",
+    "definitions": {
+        "VPNServer": {
+            "$schema": "http: //json-schema.org/draft-04/schema#",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "hostname": {
+                    "type": "string"
+                },
+                "country_code": {
+                    "type": "string"
+                },
+                "country_name": {
+                    "type": "string"
+                },
+                "city_code": {
+                    "type": "string"
+                },
+                "city_name": {
+                    "type": "string"
+                },
+                "active": {
+                    "type": "boolean"
+                },
+                "owned": {
+                    "type": "boolean"
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "ipv4_addr_in": {
+                    "type": "string"
+                },
+                "ipv6_addr_in": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
+                "network_port_speed": {
+                    "type": "number"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "status_messages": {
+                    "type": "array"
+                },
+                "pubkey": {
+                    "type": "string"
+                },
+                "multihop_port": {
+                    "type": "number"
+                },
+                "socks_name": {
+                    "type": "string"
+                },
+                "ssh_fingerprint_sha256": {
+                    "type": "string"
+                },
+                "ssh_fingerprint_md5": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "type": "array",
+    "items": {
+        "$ref": "#/definitions/VPNServer"
+    }
+}
