@@ -29,7 +29,7 @@ namespace MullvadPinger
                 var reply = await _pingWrapper.SendPingAsync(hostname, DefaultPingTimeout);
 
                 if (ipAddress == null)
-                    ipAddress = reply.Address.ToString();
+                    ipAddress = reply.Address?.ToString();
 
                 times.Add(reply.RoundtripTime);
             }
@@ -88,7 +88,7 @@ namespace MullvadPinger
 
     public record class PingReplyWrapper
     {
-        public IPAddress Address { get; init; }
+        public IPAddress? Address { get; init; }
         public long RoundtripTime { get; init; }
     }
 }
