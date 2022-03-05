@@ -4,8 +4,8 @@ namespace MullvadPinger
 {
     public class MullvadClient : IMullvadClient
     {
+        public readonly string vpnServerUrlFormat = "{0}.mullvad.net";
         private readonly IMullvadDataSource mullvadDataSource;
-        private readonly string vpnServerUrlFormat = "{0}.mullvad.net";
 
         public MullvadClient(IMullvadDataSource mullvadDataSource)
         {
