@@ -5,6 +5,7 @@ namespace MullvadPinger
 {
     public class PingUtility
     {
+        private readonly int DefaultPingTimeout = 1_000;
         private readonly IPingWrapper _pingWrapper;
 
         public PingUtility(IPingWrapper pingWrapper)
@@ -17,13 +18,15 @@ namespace MullvadPinger
             if (hostname == null)
                 throw new ArgumentNullException(nameof(hostname));
 
-            const int timeout = 1_000;
+            if (timesToPing < 1)
+                throw new ArgumentOutOfRangeException(nameof(timesToPing));
+
             List<long> times = new();
             string? ipAddress = null;
 
             for (var i = 0; i < timesToPing; i++)
             {
-                var reply = await _pingWrapper.SendPingAsync(hostname, timeout);
+                var reply = await _pingWrapper.SendPingAsync(hostname, DefaultPingTimeout);
 
                 if (ipAddress == null)
                     ipAddress = reply.Address.ToString();
