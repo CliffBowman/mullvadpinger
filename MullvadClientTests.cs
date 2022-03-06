@@ -11,10 +11,8 @@ namespace MullvadPinger
         [Test]
         public void ValidateSchemaTest()
         {
-            // TODO: Update project to copy to output folder and use relative paths.
-            
-            var schema = JSchema.Parse(File.ReadAllText(@"../../../schemas/mullvad-www-relays-all-response-schema.json"));
-            var serverList = JArray.Parse(File.ReadAllText(@"../../../data/mullvad-www-relays-all-response-sample.json"));
+            var schema = JSchema.Parse(File.ReadAllText(@"schemas/mullvad-www-relays-all-response-schema.json"));
+            var serverList = JArray.Parse(File.ReadAllText(@"data/mullvad-www-relays-all-response-sample.json"));
 
             IList<string> errors = new List<string>();
 
