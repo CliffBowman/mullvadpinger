@@ -11,6 +11,8 @@
     <!--  Added to handle "error CS0017: Program has more than one entry point defined." due to having unit
           tests in same project as code.  -->
     <GenerateProgramFile>false</GenerateProgramFile>
+    <!-- Added to fix vscode / dotnet test bug -->
+    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
   </PropertyGroup>
 
   <ItemGroup>
