@@ -13,7 +13,7 @@ namespace MullvadPinger
 
     public class SampleMullvadDataSource : IMullvadDataSource
     {
-        private readonly string filename = "./data/sample-server-response.json";
+        private readonly string filename = "data/mullvad-www-relays-all-response-sample.json";
 
         public async Task<string> GetVPNServerJsonAsync()
         {
