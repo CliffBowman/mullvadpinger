@@ -1,8 +1,8 @@
 using CommandLine;
 
-namespace MullvadPinger
+namespace MullvadPinger.model
 {
-    public class CommandLineArgs
+    public class CommandLineOptions
     {
         [Option("hostname", Required = false, HelpText = "Ping servers that match or partially match the host name.")]
         public string? Hostname { get; set; }
