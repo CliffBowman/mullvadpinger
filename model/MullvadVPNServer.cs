@@ -9,7 +9,7 @@ namespace MullvadPinger.model
         [JsonPropertyName("country_code")]
         public string? CountryCode { get; set; }
         [JsonPropertyName("country_name")]
-        public string? CountyName { get; set; }
+        public string? CountryName { get; set; }
         [JsonPropertyName("city_code")]
         public string? CityCode { get; set; }
         [JsonPropertyName("city_name")]
