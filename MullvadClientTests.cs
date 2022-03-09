@@ -27,20 +27,6 @@ namespace MullvadPinger
         }
 
         [Test]
-        public void FrameworkJsonTest()
-        {
-            // var result = JsonSerializer.Deserialize<List<MullvadVPNServer>>(File.ReadAllText(@"data/mullvad-www-relays-all-response-sample.json"));
-            var mockLogger = new Mock<ILogger<MullvadClient>>();
-
-            // mockLogger
-            //     .Setup(l => l.LogError(It.IsAny<JsonException>(), It.IsAny<string>())
-            //     .
-
-            var result = new MullvadClient(new SampleMullvadDataSource(), mockLogger.Object).GetVPNServerListAsync().GetAwaiter().GetResult();
-
-        }
-
-        [Test]
         public async Task GetVPNServerListAsyncTest()
         {
             var mockDataSource = new Mock<IMullvadDataSource>();
@@ -86,7 +72,7 @@ namespace MullvadPinger
                             ""pubkey"": ""92KRwUmhQY/n5cAUKR1R/Z/z17wOmB08GZxuats8cEw="",
                             ""multihop_port"": 3101,
                             ""socks_name"": ""us210-wg.socks5""
-                        },
+                        }
                 ]
                 ");
 
@@ -98,14 +84,14 @@ namespace MullvadPinger
             var us209 = resultVPNServerList.SingleOrDefault(x => x.Hostname?.StartsWith("us209") == true);
 
             Assert.NotNull(us209);
-            Assert.AreEqual("us209-wireguard.mullvad.net", us209?.Hostname);
+            Assert.AreEqual("us209-wireguard", us209?.Hostname);
             Assert.AreEqual("APxS9ebzK537njzcfB9gh8VXWrFrKvZeC6QQe0ZCUUM=", us209?.PublicKey);
             Assert.AreEqual(1, us209?.SpeedInGbps);
 
             var us210 = resultVPNServerList.SingleOrDefault(x => x.Hostname?.StartsWith("us210") == true);
 
             Assert.NotNull(us210);
-            Assert.AreEqual("us210-wireguard.mullvad.net", us210?.Hostname);
+            Assert.AreEqual("us210-wireguard", us210?.Hostname);
             Assert.AreEqual("92KRwUmhQY/n5cAUKR1R/Z/z17wOmB08GZxuats8cEw=", us210?.PublicKey);
             Assert.AreEqual(1, us210?.SpeedInGbps);
         }
@@ -162,7 +148,7 @@ namespace MullvadPinger
 
             var resultVPNServerList = mullvadClient.GetVPNServerListAsync(filter: new VPNServerListFilter
             {
-                Hostname = "wireguard",
+                Hostname = "us209",
             }).GetAwaiter().GetResult();
 
             Assert.AreEqual(1, resultVPNServerList.Count);
