@@ -6,8 +6,9 @@ namespace MullvadPinger
 
         public async Task<string> GetVPNServerJsonAsync()
         {
-            using (var client = new HttpClient())
-                return await client.GetStringAsync(serverListUrl);
+            using HttpClient client = new();
+
+            return await client.GetStringAsync(serverListUrl);
         }
     }
 

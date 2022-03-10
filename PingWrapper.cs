@@ -9,9 +9,9 @@ namespace MullvadPinger
         public async Task<PingReplyWrapper> SendPingAsync(string hostname, int timeout)
         {
             PingReply? reply;
+            using Ping ping = new();
 
-            using (var ping = new Ping())
-                reply = await ping.SendPingAsync(hostname, timeout);
+            reply = await ping.SendPingAsync(hostname, timeout);
 
             return new PingReplyWrapper
             {
