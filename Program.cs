@@ -69,7 +69,7 @@ namespace MullvadPinger
 
                     sortedResults.ForEach(r =>
                     {
-                        Console.WriteLine($"{r.Server.FullyQualifiedHostname()} - {r.PingResult.AverageRate} ms");
+                        Console.WriteLine($"{r.Server.FullyQualifiedHostname()} - min {r.PingResult.MinRate} ms - avg {r.PingResult.AverageRate} ms - max {r.PingResult.MaxRate} ms");
                     });
                 });
         }

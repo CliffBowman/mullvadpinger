@@ -28,7 +28,7 @@ namespace MullvadPinger
             return Task.FromResult<PingReplyWrapper>(new PingReplyWrapper
             {
                 Address = IPAddress.None,
-                RoundtripTime = 0,
+                RoundtripTime = Random.Shared.Next(1000),
             });
         }
     }
