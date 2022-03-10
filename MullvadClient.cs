@@ -1,5 +1,4 @@
 using System.Linq.Expressions;
-using System.Reflection;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using MullvadPinger.model;
@@ -17,7 +16,7 @@ namespace MullvadPinger
             this._logger = logger;
         }
 
-        public async Task<List<MullvadVPNServer>> GetVPNServerListAsync(VPNServerListFilter? filter = null)
+        public async Task<List<MullvadVPNServer>> GetVPNServerListAsync(MullvadVPNServer? filter = null)
         {
             var serverJsonString = await _mullvadDataSource.GetVPNServerJsonAsync();
 
@@ -43,30 +42,51 @@ namespace MullvadPinger
                 return servers;
 
             var query = servers.AsQueryable();
-            var type = new MullvadVPNServer();
 
             if (filter.Hostname != null)
-                query = FilterString(query, nameof(type.Hostname), filter.Hostname);
+                query = FilterString(query, nameof(filter.Hostname), filter.Hostname);
 
             if (filter.CountryCode != null)
-                query = FilterString(query, nameof(type.CountryCode), filter.CountryCode);
+                query = FilterString(query, nameof(filter.CountryCode), filter.CountryCode);
 
             if (filter.CountryName != null)
-                query = FilterString(query, nameof(type.CountryName), filter.CountryName);
+                query = FilterString(query, nameof(filter.CountryName), filter.CountryName);
 
             if (filter.CityCode != null)
-                query = FilterString(query, nameof(type.CityCode), filter.CityCode);
+                query = FilterString(query, nameof(filter.CityCode), filter.CityCode);
 
             if (filter.CityName != null)
-                query = FilterString(query, nameof(type.CityName), filter.CityName);
+                query = FilterString(query, nameof(filter.CityName), filter.CityName);
 
-            if (filter.Active != null)
-                query = FilterBoolean(query, nameof(type.IsActive), filter.Active.Value);
+            if (filter.IsActive != null)
+                query = FilterBoolean(query, nameof(filter.IsActive), filter.IsActive);
 
-            if (filter.Owned != null)
-                query = FilterBoolean(query, nameof(type.IsOwned), filter.Owned.Value);
+            if (filter.IsOwned != null)
+                query = FilterBoolean(query, nameof(filter.IsOwned), filter.IsOwned);
 
-            // TODO: Add additional filtering.
+            if (filter.Provider != null)
+                query = FilterString(query, nameof(filter.Provider), filter.Provider);
+
+            if (filter.IPV4 != null)
+                query = FilterString(query, nameof(filter.IPV4), filter.IPV4);
+
+            if (filter.IPV6 != null)
+                query = FilterString(query, nameof(filter.IPV6), filter.IPV6);
+
+            if (filter.SpeedInGbps != null)
+                query = FilterInt(query, nameof(filter.SpeedInGbps), filter.SpeedInGbps);
+
+            if (filter.ServerType != null)
+                query = FilterString(query, nameof(filter.ServerType), filter.ServerType);
+
+            if (filter.PublicKey != null)
+                query = FilterString(query, nameof(filter.PublicKey), filter.PublicKey);
+
+            if (filter.MultiHopPort != null)
+                query = FilterInt(query, nameof(filter.MultiHopPort), filter.MultiHopPort);
+
+            if (filter.SocksServer != null)
+                query = FilterString(query, nameof(filter.SocksServer), filter.SocksServer);
 
             return query.ToList();
         }
@@ -77,24 +97,24 @@ namespace MullvadPinger
             var property = Expression.Property(x, propertyName);
             var notNull = Expression.NotEqual(property, Expression.Constant(null));
             var contains = Expression.Call(property, "Contains", null, Expression.Constant(filterValue), Expression.Constant(StringComparison.CurrentCultureIgnoreCase));
-            var final = Expression.Lambda<Func<MullvadVPNServer, bool>>(Expression.And(notNull, contains), x);
-            return query.Where(final);
+            var lambda = Expression.Lambda<Func<MullvadVPNServer, bool>>(Expression.And(notNull, contains), x);
+            return query.Where(lambda);
         }
 
-        private IQueryable<MullvadVPNServer> FilterBoolean(IQueryable<MullvadVPNServer> query, string propertyName, bool filterValue)
+        private IQueryable<MullvadVPNServer> FilterBoolean(IQueryable<MullvadVPNServer> query, string propertyName, bool? filterValue)
         {
             var x = Expression.Parameter(typeof(MullvadVPNServer), "x");
             var property = Expression.Property(x, propertyName);
-            var final = Expression.Lambda<Func<MullvadVPNServer, bool>>(Expression.Equal(property, Expression.Constant(filterValue, typeof(bool?))), x);
-            return query.Where(final);
+            var lambda = Expression.Lambda<Func<MullvadVPNServer, bool>>(Expression.Equal(property, Expression.Constant(filterValue, typeof(bool?))), x);
+            return query.Where(lambda);
         }
 
-        private IQueryable<MullvadVPNServer> FilterInt(IQueryable<MullvadVPNServer> query, string propertyName, int filterValue)
+        private IQueryable<MullvadVPNServer> FilterInt(IQueryable<MullvadVPNServer> query, string propertyName, int? filterValue)
         {
             var x = Expression.Parameter(typeof(MullvadVPNServer), "x");
             var property = Expression.Property(x, propertyName);
-            var final = Expression.Lambda<Func<MullvadVPNServer, bool>>(Expression.Equal(property, Expression.Constant(filterValue, typeof(int?))), x);
-            return query.Where(final);
+            var lambda = Expression.Lambda<Func<MullvadVPNServer, bool>>(Expression.Equal(property, Expression.Constant(filterValue, typeof(int?))), x);
+            return query.Where(lambda);
         }
     }
 }

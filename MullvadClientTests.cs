@@ -146,7 +146,7 @@ namespace MullvadPinger
                 ]
                 ");
 
-            var resultVPNServerList = mullvadClient.GetVPNServerListAsync(filter: new VPNServerListFilter
+            var resultVPNServerList = mullvadClient.GetVPNServerListAsync(filter: new MullvadVPNServer
             {
                 Hostname = "us209",
             }).GetAwaiter().GetResult();
@@ -205,9 +205,68 @@ namespace MullvadPinger
                 ]
                 ");
 
-            var resultVPNServerList = mullvadClient.GetVPNServerListAsync(filter: new VPNServerListFilter
+            var resultVPNServerList = mullvadClient.GetVPNServerListAsync(filter: new MullvadVPNServer
             {
-                Active = false
+                IsActive = false
+            }).GetAwaiter().GetResult();
+
+            Assert.AreEqual(1, resultVPNServerList.Count);
+            Assert.AreEqual("us210-wireguard", resultVPNServerList[0].Hostname);
+        }
+
+        [Test]
+        public void GetVPNServerListAsyncFilterIntTest()
+        {
+            var mockDataSource = new Mock<IMullvadDataSource>();
+            var mockLogger = new Mock<ILogger<MullvadClient>>();
+            var mullvadClient = new MullvadClient(mockDataSource.Object, mockLogger.Object);
+
+            mockDataSource
+                .Setup(x => x.GetVPNServerJsonAsync())
+                .ReturnsAsync(@"
+                [
+                    {
+                            ""hostname"": ""us209-wireguard"",
+                            ""country_code"": ""us"",
+                            ""country_name"": ""USA"",
+                            ""city_code"": ""sea"",
+                            ""city_name"": ""Seattle, WA"",
+                            ""active"": true,
+                            ""owned"": false,
+                            ""provider"": ""100TB"",
+                            ""ipv4_addr_in"": ""199.229.250.52"",
+                            ""ipv6_addr_in"": ""2607:f7a0:c:4::c09f"",
+                            ""network_port_speed"": 1,
+                            ""type"": ""wireguard"",
+                            ""status_messages"": [],
+                            ""pubkey"": ""APxS9ebzK537njzcfB9gh8VXWrFrKvZeC6QQe0ZCUUM="",
+                            ""multihop_port"": 3098,
+                            ""socks_name"": ""us209-wg.socks5""
+                        },
+                        {
+                            ""hostname"": ""us210-wireguard"",
+                            ""country_code"": ""us"",
+                            ""country_name"": ""USA"",
+                            ""city_code"": ""sea"",
+                            ""city_name"": ""Seattle, WA"",
+                            ""active"": false,
+                            ""owned"": false,
+                            ""provider"": ""100TB"",
+                            ""ipv4_addr_in"": ""199.229.250.53"",
+                            ""ipv6_addr_in"": ""2607:f7a0:c:4::c10f"",
+                            ""network_port_speed"": 10,
+                            ""type"": ""wireguard"",
+                            ""status_messages"": [],
+                            ""pubkey"": ""92KRwUmhQY/n5cAUKR1R/Z/z17wOmB08GZxuats8cEw="",
+                            ""multihop_port"": 3101,
+                            ""socks_name"": ""us210-wg.socks5""
+                        }
+                ]
+                ");
+
+            var resultVPNServerList = mullvadClient.GetVPNServerListAsync(filter: new MullvadVPNServer
+            {
+                SpeedInGbps = 10
             }).GetAwaiter().GetResult();
 
             Assert.AreEqual(1, resultVPNServerList.Count);

@@ -4,6 +4,6 @@ namespace MullvadPinger
 {
     public interface IMullvadClient
     {
-        Task<List<MullvadVPNServer>> GetVPNServerListAsync(VPNServerListFilter? filter = null);
+        Task<List<MullvadVPNServer>> GetVPNServerListAsync(MullvadVPNServer? filter = null);
     }
 }
