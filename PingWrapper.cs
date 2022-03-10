@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.NetworkInformation;
+using MullvadPinger.model;
 
 namespace MullvadPinger
 {

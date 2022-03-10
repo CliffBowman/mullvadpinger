@@ -1,4 +1,4 @@
-namespace MullvadPinger
+namespace MullvadPinger.model
 {
     public record class PingResult
     {

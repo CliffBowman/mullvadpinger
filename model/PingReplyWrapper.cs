@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace MullvadPinger
+namespace MullvadPinger.model
 {
     public record class PingReplyWrapper
     {

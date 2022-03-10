@@ -1,3 +1,5 @@
+using MullvadPinger.model;
+
 namespace MullvadPinger
 {
     public interface IPingWrapper

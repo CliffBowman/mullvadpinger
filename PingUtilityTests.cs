@@ -1,5 +1,6 @@
 using System.Net;
 using Moq;
+using MullvadPinger.model;
 using NUnit.Framework;
 
 namespace MullvadPinger.Tests
