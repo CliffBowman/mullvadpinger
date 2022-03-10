@@ -9,7 +9,7 @@ namespace MullvadPinger
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var host = Host
                 .CreateDefaultBuilder(args)
@@ -29,9 +29,9 @@ namespace MullvadPinger
                 })
                 .Build();
 
-            Parser.Default
+            await Parser.Default
                 .ParseArguments<CommandLineOptions>(args)
-                .WithParsed<CommandLineOptions>(options =>
+                .WithParsedAsync<CommandLineOptions>(async options =>
                 {
                     var mullvadClient = host.Services.GetRequiredService<IMullvadClient>();
                     var pingUtility = host.Services.GetRequiredService<IPingUtility>();
@@ -42,9 +42,17 @@ namespace MullvadPinger
 
                     logger.LogInformation("Starting parallel server ping.");
 
-                    Parallel.ForEach(serversToPing, new ParallelOptions { MaxDegreeOfParallelism = options.NumbersServersToPingInParallel }, async server =>
+                    var parallelOptions = new ParallelOptions
                     {
-                        var pingResult = await pingUtility.GetAvgPingRateAsync(server.FullyQualifiedHostname());
+                        MaxDegreeOfParallelism = options.NumbersServersToPingInParallel
+                    };
+
+                    await Parallel.ForEachAsync(serversToPing, parallelOptions, async (server, token) =>
+                    {
+                        var pingResult = await pingUtility.GetAvgPingRateAsync(
+                            server.FullyQualifiedHostname(),
+                            options.PingsPerServer,
+                            options.PingIntervalMS);
 
                         pingResults.Add(pingResult);
                     });

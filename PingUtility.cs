@@ -12,7 +12,7 @@ namespace MullvadPinger
             this._pingWrapper = pingWrapper;
         }
 
-        public async Task<PingResult> GetAvgPingRateAsync(string? hostname, int timesToPing = 5)
+        public async Task<PingResult> GetAvgPingRateAsync(string? hostname, int timesToPing = 5, int pingIntervalMS = 200)
         {
             if (hostname == null)
                 throw new ArgumentNullException(nameof(hostname));
@@ -31,6 +31,8 @@ namespace MullvadPinger
                     ipAddress = reply.Address?.ToString();
 
                 times.Add(reply.RoundtripTime);
+
+                await Task.Delay(pingIntervalMS);
             }
 
             return new PingResult
