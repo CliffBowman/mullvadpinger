@@ -3,6 +3,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MullvadPinger.model;
+using System.Collections.Concurrent;
 
 namespace MullvadPinger
 {
@@ -24,6 +25,7 @@ namespace MullvadPinger
                     services.AddTransient<IMullvadDataSource, SampleMullvadDataSource>();
                     // services.AddTransient<IPingWrapper, PingWrapper>();
                     services.AddTransient<IPingWrapper, NoopPingWrapper>();
+                    services.AddTransient<IPingUtility, PingUtility>();
                 })
                 .Build();
 
@@ -32,9 +34,35 @@ namespace MullvadPinger
                 .WithParsed<CommandLineOptions>(options =>
                 {
                     var mullvadClient = host.Services.GetRequiredService<IMullvadClient>();
-                    var servers = mullvadClient.GetVPNServerListAsync().GetAwaiter().GetResult();
+                    var pingUtility = host.Services.GetRequiredService<IPingUtility>();
+                    var logger = host.Services.GetService<ILogger<Program>>();
+                    var serversToPing = mullvadClient.GetVPNServerListAsync(filter: options).GetAwaiter().GetResult();
 
-                    servers.ForEach(s => Console.WriteLine($"{s.FullyQualifiedHostname()}"));
+                    ConcurrentBag<PingResult> pingResults = new();
+
+                    logger.LogInformation("Starting parallel server ping.");
+
+                    Parallel.ForEach(serversToPing, new ParallelOptions { MaxDegreeOfParallelism = options.NumbersServersToPingInParallel }, async server =>
+                    {
+                        var pingResult = await pingUtility.GetAvgPingRateAsync(server.FullyQualifiedHostname());
+
+                        pingResults.Add(pingResult);
+                    });
+
+                    var sortedResults = pingResults
+                        .Join(serversToPing, pr => pr.Hostname, s => s.FullyQualifiedHostname(), (pr, s) => new
+                        {
+                            Server = s,
+                            PingResult = pr,
+                        })
+                        .OrderBy(r => r.PingResult.AverageRate)
+                        .ThenByDescending(r => r.Server.SpeedInGbps)
+                        .ToList();
+
+                    sortedResults.ForEach(r =>
+                    {
+                        Console.WriteLine($"{r.Server.FullyQualifiedHostname()} - {r.PingResult.AverageRate} ms");
+                    });
                 });
         }
     }

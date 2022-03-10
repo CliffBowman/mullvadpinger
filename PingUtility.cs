@@ -2,7 +2,7 @@ using MullvadPinger.model;
 
 namespace MullvadPinger
 {
-    public class PingUtility
+    public class PingUtility : IPingUtility
     {
         private readonly int DefaultPingTimeout = 1_000;
         private readonly IPingWrapper _pingWrapper;
@@ -12,7 +12,7 @@ namespace MullvadPinger
             this._pingWrapper = pingWrapper;
         }
 
-        public async Task<PingResult> GetAvgPingRateAsync(string? hostname, int timesToPing = 10)
+        public async Task<PingResult> GetAvgPingRateAsync(string? hostname, int timesToPing = 5)
         {
             if (hostname == null)
                 throw new ArgumentNullException(nameof(hostname));
@@ -35,6 +35,7 @@ namespace MullvadPinger
 
             return new PingResult
             {
+                Hostname = hostname,
                 IPAddress = ipAddress,
                 MinRate = times.Min(),
                 AverageRate = times.Average(),

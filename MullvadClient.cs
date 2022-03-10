@@ -18,12 +18,16 @@ namespace MullvadPinger
 
         public async Task<List<MullvadVPNServer>> GetVPNServerListAsync(MullvadVPNServer? filter = null)
         {
+            _logger.LogDebug("Retrieving servers list from Mullvad.");
+
             var serverJsonString = await _mullvadDataSource.GetVPNServerJsonAsync();
 
             List<MullvadVPNServer>? servers;
 
             try
             {
+                _logger.LogDebug("Deserializing JSON server list.");
+
                 servers = JsonSerializer.Deserialize<List<MullvadVPNServer>>(serverJsonString);
             }
             catch (JsonException je)
@@ -37,6 +41,8 @@ namespace MullvadPinger
                 _logger.LogError("Error retrieving Mullvad server list.");
                 throw new Exception("Error retrieving Mullvad server list.");
             }
+
+            _logger.LogDebug($"{servers.Count} total available servers.");
 
             if (filter == null)
                 return servers;
@@ -87,6 +93,8 @@ namespace MullvadPinger
 
             if (filter.SocksServer != null)
                 query = FilterString(query, nameof(filter.SocksServer), filter.SocksServer);
+
+            _logger.LogDebug($"{query.Count()} filter servers after filter is applied.");
 
             return query.ToList();
         }

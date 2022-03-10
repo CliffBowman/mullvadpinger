@@ -47,7 +47,7 @@ namespace MullvadPinger.model
         public int? SpeedInGbps { get; set; }
 
         [JsonPropertyName("type")]
-        [Option("type", Required = false, HelpText = "Ping servers that match server type.")]
+        [Option("server-type", Required = false, HelpText = "Ping servers that match server type.")]
         public string? ServerType { get; set; }
 
         [JsonPropertyName("status_messages")]

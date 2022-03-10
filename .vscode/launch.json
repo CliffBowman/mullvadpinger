@@ -12,8 +12,12 @@
             // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/bin/Debug/net6.0/mullvadpinger.dll",
             "args": [
-                "--country-code",
-                "USA"
+                "--country-name",
+                "USA",
+                "--server-type",
+                "wireguard",
+                "--active",
+                "true"
             ],
             "cwd": "${workspaceFolder}",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
